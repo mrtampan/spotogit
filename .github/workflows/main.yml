@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      album:
+        description: 'Input url album spotify'
+        required: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update package OS
+        run: sh install.sh
+      - uses: actions/checkout@v3
+      - name: Install Depedenciest npm
+        run: |
+          npm install
+      - name: Running app
+        run: |
+          node app.js ${{ github.event.inputs.album }}
+      - name: Commit
+        run: |
+          git config --local user.name "mrtampan"
+          git config --local user.email "mrtampan@github.io"
+          git add -A
+          git commit -m "[AUTO:BUILD] build from musiclist.json"
+      - name: Push
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          force: true
+          directory: "."
+          github_token: ${{ secrets.TOKEN }}

@@ -12,7 +12,7 @@ async function runningApp() {
   
     // Declaring the respective url in 'links' object
     const links = {
-      album: "", // Url of the album you want to gather info about
+      album: process.argv[2], // Url of the album you want to gather info about
     };
     const fs = require('fs-extra');
   
@@ -33,7 +33,7 @@ async function runningApp() {
       let musicData = fs.readFileSync('musiclist.json');
     
       musicData = JSON.parse(musicData);
-      musicData.music.push({ name: data.name, file: songname });
+      musicData.music.push({ name: data.name, source: songname });
     
       fs.writeFile('musiclist.json', JSON.stringify(musicData), function (error) {
         console.log("Written file 'musiclist.json'... ");

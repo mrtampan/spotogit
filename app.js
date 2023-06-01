@@ -12,9 +12,7 @@ async function runningApp() {
   
     // Declaring the respective url in 'links' object
     const links = {
-      artist: "7n2Ycct7Beij7Dj7meI4X0", // Url of the artist you want to gather info about
-      album: "7hzP5i7StxYG4StECA0rrJ", // Url of the album you want to gather info about
-      song: "4OtVQ2ZxS7yigIjGz5yKg1", // Url of the song you want to gather info about or download
+      album: "", // Url of the album you want to gather info about
     };
     const fs = require('fs-extra');
   
@@ -22,7 +20,6 @@ async function runningApp() {
   
     let songname = '';
     const album = await spotify.getAlbum(links.album);
-
 
     album.tracks.forEach(async item => {
       const data = await spotify.getTrack(item); // Waiting for the data 🥱

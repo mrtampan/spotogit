@@ -2,9 +2,10 @@ name: CI
 
 on:
   workflow_dispatch:
-    branches:
-      - main
     inputs:
+      branch:
+        description: 'input branch'
+        required: true
       album:
         description: 'Input url album spotify'
         required: true
@@ -35,3 +36,4 @@ jobs:
           force: true
           directory: "."
           github_token: ${{ secrets.TOKEN }}
+          branch: ${{ github.event.inputs.branch }}

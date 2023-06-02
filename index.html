@@ -1,0 +1,403 @@
+
+<html>
+    <head>
+    <title>Playyer Music </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    </head>
+    <body>
+    <style>
+    .seekStyle{
+      -webkit-appearance: none;
+      margin: 7.3px 0;
+    }
+    .seekStyle:focus {
+      outline: none;
+    }
+    .seekStyle::-webkit-slider-runnable-track {
+      height: 11.4px;
+      cursor: pointer;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      background: rgba(31, 74, 99, 0.92);
+      border-radius: 1.3px;
+      border: 0.2px solid #010101;
+    }
+    .seekStyle::-webkit-slider-thumb {
+      box-shadow: 0.9px 0.9px 1px rgba(0, 56, 49, 0.24), 0px 0px 0.9px rgba(0, 82, 71, 0.24);
+      border: 1.8px solid rgba(0, 4, 30, 0.14);
+      height: 26px;
+      width: 26px;
+      border-radius: 15px;
+      background: rgba(71, 227, 255, 0.89);
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -7.5px;
+    }
+    .seekStyle:focus::-webkit-slider-runnable-track {
+      background: rgba(37, 89, 118, 0.92);
+    }
+    .seekStyle::-moz-range-track {
+      height: 11.4px;
+      cursor: pointer;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      background: rgba(31, 74, 99, 0.92);
+      border-radius: 1.3px;
+      border: 0.2px solid #010101;
+    }
+    .seekStyle::-moz-range-thumb {
+      box-shadow: 0.9px 0.9px 1px rgba(0, 56, 49, 0.24), 0px 0px 0.9px rgba(0, 82, 71, 0.24);
+      border: 1.8px solid rgba(0, 4, 30, 0.14);
+      height: 26px;
+      width: 26px;
+      border-radius: 15px;
+      background: rgba(71, 227, 255, 0.89);
+      cursor: pointer;
+    }
+    .seekStyle::-ms-track {
+      width: 100%;
+      height: 11.4px;
+      cursor: pointer;
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+    .seekStyle::-ms-fill-lower {
+      background: rgba(25, 59, 80, 0.92);
+      border: 0.2px solid #010101;
+      border-radius: 2.6px;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    }
+    .seekStyle::-ms-fill-upper {
+      background: rgba(31, 74, 99, 0.92);
+      border: 0.2px solid #010101;
+      border-radius: 2.6px;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    }
+    .seekStyle::-ms-thumb {
+      box-shadow: 0.9px 0.9px 1px rgba(0, 56, 49, 0.24), 0px 0px 0.9px rgba(0, 82, 71, 0.24);
+      border: 1.8px solid rgba(0, 4, 30, 0.14);
+      height: 26px;
+      width: 26px;
+      border-radius: 15px;
+      background: rgba(71, 227, 255, 0.89);
+      cursor: pointer;
+      height: 11.4px;
+    }
+    .seekStyle:focus::-ms-fill-lower {
+      background: rgba(31, 74, 99, 0.92);
+    }
+    .seekStyle:focus::-ms-fill-upper {
+      background: rgba(37, 89, 118, 0.92);
+    }
+    
+    .buttonStyle { 
+    text-align:center;
+    }
+    
+    .buttonStyle > div {
+    margin-left:50px;
+    }
+    
+    </style>
+
+    <p>Choose Music</p>
+    <select id="chooseMusic">
+    
+    </select>
+    </div>
+    <div>
+        <p>Play Mode</p>
+        <input type="radio" name="modeS" value="0" checked="checked"/>NormalSwitch
+        <input type="radio" name="modeS" value="1" />RandomSwitch
+    </div>
+    <hr>
+    <h3 id="myStatus"></h3>
+    <div class="buttonStyle" style="display:flex;">
+    <div id="myMute"><img src="image/mute.png" width="50" height="50" alt="mute"></div>
+    <div id="myPlay" ><img src="image/play.png" width="50" height="50" alt="play" /></div>
+    <div id="myNext"><img src="image/next.png" width="50" height="50" alt="next" /></div>
+    <div id="myPrev"><img src="image/prev.png" width="50" height="50" alt="prev"/></div>
+    </div>
+    
+    <div style="clear:both"></div>
+    <br>
+    <div id="timebox">
+        <span id="curtimetext">00:00</span> / <span id="durtimetext">00:00</span>
+    </div>
+    <div>
+    <input id="mySeek" class="seekStyle" type="range" min="0" max="100" value="0" step="1"/>
+    </div>
+    <div>
+    <span>Volume:</span>
+    <input id="myVolume" type="range" min="0" max="100" value="100" step="1"/>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.1/slimselect.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.1/slimselect.min.css" rel="stylesheet"></link>
+    <script src="
+https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js
+"></script>
+
+    <script >
+        
+
+let slimSelectMusic = new SlimSelect({
+    select: '#chooseMusic'
+});
+
+
+var audio, playbtn, mutebtn, 
+seekslider, volumeslider, 
+seekto, seeking=false, 
+curtimetext, durtimetext,
+play_status, playlist,
+ext, playlist_index, agent,isMobile, 
+modeSwitch, playModeValue, musicBank;
+
+function initAudioPlayer() {
+    // Set Object references
+    playbtn = document.getElementById("myPlay");
+    mutebtn = document.getElementById("myMute");
+    nextbtn = document.getElementById("myNext");
+    prevbtn = document.getElementById("myPrev");
+    volumeslider = document.getElementById("myVolume");
+    seekslider = document.getElementById("mySeek");
+    curtimetext = document.getElementById("curtimetext");
+    durtimetext = document.getElementById("durtimetext");
+    play_status = document.getElementById("myStatus");
+    modeSwitch = document.getElementsByName("modeS");
+    chooseMusic = document.getElementById("chooseMusic");
+    chooseAlbum = document.getElementById("chooseAlbum");
+    
+    isMobile = {
+    Android: function() {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+    },
+    any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+    };
+
+    
+
+    
+    //Functions
+
+
+    function getDataMusic(){
+        musicBank = window.location.origin;
+        fetch(musicBank + '/musiclist.json', {
+            method: 'GET'
+        })
+        .then((response) => response.json())
+        .then((result) => {
+
+            playlist = result.music;
+
+            playlist = _.shuffle(playlist);
+            console.log(result.music);
+
+            var df = document.createDocumentFragment();
+            for(var d=0;d<playlist.length;d++)
+            {
+            let option = document.createElement('option');
+            option.value = playlist[d].source;
+            option.appendChild(document.createTextNode(playlist[d].name));
+            df.appendChild(option);
+            }
+            chooseMusic.appendChild(df);
+            readyAudio();
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+
+    }
+    getDataMusic();
+
+    function readyAudio(){
+        // Audio Object
+        audio = new Audio();
+
+        playModeValue = "0";
+        playlist_index = 0;
+        agent = navigator.userAgent.toLowerCase();
+        audio.src = musicBank+ '/' +playlist[0].source;
+        audio.loop = false;
+        // audio.play();
+        play_status.innerHTML = "Track "+(playlist_index+1)+" - "+ playlist[playlist_index].name;
+        document.title = play_status.innerText;
+        
+        playbtn.addEventListener("click", playPause);
+        mutebtn.addEventListener("click", mute);
+        nextbtn.addEventListener("click", nextPlay);
+        prevbtn.addEventListener("click", prevPlay);
+        if(isMobile.Android() || isMobile.any() ) {
+        /*seekslider.addEventListener("touchend", function(event){ seeking=true; seek(event); });
+        seekslider.addEventListener("touchmove", function(event){ seek(event); });
+        seekslider.addEventListener("touchstart", function(){ seeking=false; });*/
+        
+        seekslider.addEventListener("touchstart", function(event){ seeking=true; seekandro(event); });
+        seekslider.addEventListener("touchmove", function(event){ seekandro(event); });
+        seekslider.addEventListener("touchend", function(){ seeking=false; });
+        volumeslider.addEventListener("touchmove", setvolume);
+        } else {
+        seekslider.addEventListener("mousedown", function(event){ seeking=true; seek(event); });
+        seekslider.addEventListener("mousemove", function(event){ seek(event); });
+        seekslider.addEventListener("mouseup", function(){ seeking=false; });
+        volumeslider.addEventListener("mousemove", setvolume);
+        }
+        audio.addEventListener("timeupdate", function() { seektimeupdate(); })
+        audio.addEventListener("ended", function(){ switchTrack(); });
+
+        chooseMusic.addEventListener("change", musicChoose);
+        
+        for(let i = 0; i < modeSwitch.length ; i++){
+            modeSwitch[i].addEventListener("change", function() {
+                console.log(this.value);
+                if(this == null){
+                    playModeValue = 0;
+                }
+                playModeValue = this.value;
+            })
+        }
+    
+    }
+
+    function musicChoose() {
+        audio.pause();
+        audio.currentTime = 0;
+        let checkedMusic = chooseMusic.options[chooseMusic.selectedIndex].value
+        console.log(checkedMusic);
+        audio.src = musicBank+ '/' +checkedMusic;
+        playlist_index = chooseMusic.selectedIndex
+        play_status.innerHTML = "Track "+(playlist_index+1)+" - "+ playlist[playlist_index].name;
+        document.title = play_status.innerText;
+        playPause(true);
+    }
+    function switchTrack() {
+        if(playModeValue == "1"){
+           playlist_index = Math.floor(Math.random() * (playlist.length - 1));
+        } else {
+            if(playlist_index == (playlist.length - 1)){
+                playlist_index = 0;
+            } else {
+                playlist_index++;
+            }
+        }
+        play_status.innerHTML = "Track "+(playlist_index+1)+" - "+ playlist[playlist_index].name;
+        document.title = play_status.innerText;
+        audio.src = musicBank+ '/' +playlist[playlist_index].source;
+        audio.play();
+    }
+    
+    
+    function playPause(playTrigger){
+        this.playTrigger = playTrigger;
+        
+        if(playTrigger = true){
+            audio.play();
+            playbtn.children[0].src = "image/pause.png";
+        }else{
+            audio.pause();
+            playbtn.children[0].src = "image/play.png";
+        }
+    }
+    
+    function playPause(){
+        if(audio.paused){
+            audio.play();
+            playbtn.children[0].src = "image/pause.png";
+            // playbtn.innerText = "Pause";
+        } else {
+            audio.pause();
+            playbtn.children[0].src = "image/play.png";
+// 			playbtn.innerText = "Play";
+        }
+    }
+    function mute(){
+        if(audio.muted){
+            audio.muted = false;
+        } else {
+            audio.muted = true;
+        }
+    }
+    function seek(event){
+        if(seeking){
+            seekslider.value = event.clientX - seekslider.offsetLeft;
+            seekto = audio.duration * (seekslider.value / 100);
+            audio.currentTime = seekto;
+            
+        }
+    }
+    
+    function seekandro(event){
+        if(seeking){
+            seekslider.value = event.touches[0].clientX - seekslider.offsetLeft;
+            seekto = audio.duration * (seekslider.value / 100);
+            audio.currentTime = seekto;
+
+        }
+    }
+    
+    
+    function setvolume() {
+        audio.volume = volumeslider.value / 100;
+    }
+    function seektimeupdate() {
+        var nt = audio.currentTime * (100 / audio.duration);
+        seekslider.value = nt;
+        var curmins = Math.floor(audio.currentTime / 60);
+        var cursecs = Math.floor(audio.currentTime - curmins * 60);
+        var durmins = Math.floor(audio.duration / 60);
+        var dursecs = Math.floor(audio.duration - curmins * 60);
+        if(cursecs < 10) { cursecs = "0"+cursecs;}
+        if(dursecs < 10) { dursecs = "0"+dursecs;}
+        if(curmins < 10) { curmins = "0"+curmins;}
+        if(durmins < 10) { durmins = "0"+durmins;}
+        curtimetext.innerHTML = curmins+":"+cursecs;
+        durtimetext.innerHTML = durmins+":"+dursecs;
+    }
+    function nextPlay() {
+        if(playlist_index > (playlist.length - 1)){
+            playlist_index = 0;
+        }
+        playlist_index++;
+        play_status.innerHTML = "Track "+(playlist_index+1)+" - "+ playlist[playlist_index].name;
+        document.title = play_status.innerText;
+        audio.src = musicBank + '/' + playlist[playlist_index].source;
+        playPause(true);
+    }
+    function prevPlay() {
+        if(playlist_index < 1 ) {
+         alert("Error Mbah");
+        }else {
+        playlist_index--;
+        play_status.innerHTML = "Track "+(playlist_index+1)+" - "+ playlist[playlist_index].name;
+        document.title = play_status.innerText;
+        audio.src = musicBank+ '/' +playlist[playlist_index].source;
+        playPause(true);
+        }
+    }
+    
+}
+
+window.addEventListener('DOMContentLoaded', (event) => {
+    initAudioPlayer();
+});
+    </script>
+    
+    </body>
+    </html>		

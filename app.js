@@ -1,5 +1,6 @@
 async function runningApp() {
     const env = require('dotenv').config();
+    const _ = require('lodash');
   
     // Initialization and Authentication
     const Spotify = require('spotifydl-core').default; // Import the library
@@ -20,28 +21,33 @@ async function runningApp() {
   
     let songname = '';
     const album = await spotify.getAlbum(links.album);
+    let musicList = [];
 
-    album.tracks.forEach(async item => {
+    album.tracks.forEach( async item => {
       const data = await spotify.getTrack(item); // Waiting for the data 🥱
       console.log('Downloading: ', data.name, 'by:', data.artists.join(' ')); // Keep an eye on the progress
       const song = await spotify.downloadTrack(item); // Downloading goes brr brr
-      fs.writeFileSync('music/' + data.name + '.mp3', song); // Let's write the buffer to the woofer (i mean file, hehehe)
+      console.log('Downloading skuyyy: ', song); // Keep an eye on the progress
+      await fs.writeFile('music/' + data.name + '.mp3', song); // Let's write the buffer to the woofer (i mean file, hehehe)
       console.log('Berhasil Download: ', data.name);
       songname = 'music/' + data.name + '.mp3';
-    
-      // Save data
-      let musicData = fs.readFileSync('musiclist.json');
-    
-      musicData = JSON.parse(musicData);
-      musicData.music.push({ name: data.name, source: songname });
-    
-      fs.writeFile('musiclist.json', JSON.stringify(musicData), function (error) {
-        console.log("Written file 'musiclist.json'... ");
-      });
-      // end save data
-    
-      console.log(songname);      
+                  // Save data
+                  musicList.push({ name: data.name, source: songname });
+
+                  // end save data
+                
+                  console.log(songname); 
+
+     
     });
 
+    let musicData = await fs.readFile('musiclist.json');
+    
+    musicData = JSON.parse(musicData);
+    musicData.music = _.merge(musicData.music, musicList);
+  
+    await fs.writeFileSync('musiclist.json', JSON.stringify(musicData), function (error) {
+      console.log("Written file 'musiclist.json'... ");
+    });
   }
   runningApp();

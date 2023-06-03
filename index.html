@@ -195,9 +195,12 @@ function initAudioPlayer() {
     
     //Functions
 
+    function getCurrentURL () {
+        return window.location.href
+    }
 
     function getDataMusic(){
-        musicBank = window.location.origin;
+        musicBank = getCurrentURL();
         fetch(musicBank + '/musiclist.json', {
             method: 'GET'
         })

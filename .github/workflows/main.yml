@@ -12,6 +12,10 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Extract Branch
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
       - uses: actions/checkout@v3
       - name: Update package OS
         run: sh install.sh
@@ -33,4 +37,4 @@ jobs:
           force: true
           directory: "."
           github_token: ${{ secrets.TOKEN }}
-          branch: ${GITHUB_REF##*/}
+          branch: ${{ steps.extract_branch.outputs.branch }}

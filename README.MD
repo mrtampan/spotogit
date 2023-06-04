@@ -24,3 +24,4 @@ Running workflows with input url track song spotify
 
 - Spotifydl-core : https://github.com/AlenVelocity/spotifydl-core
 - Github push : https://github.com/ad-m/github-push-action
+- Setup FFMPEG Actions : https://github.com/FedericoCarboni/setup-ffmpeg

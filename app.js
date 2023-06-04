@@ -27,14 +27,16 @@ async function runningApp() {
   console.log("Downloading skuyyy: ", song); // Keep an eye on the progress
   await fs.writeFile("music/" + data.name + ".mp3", song); // Let's write the buffer to the woofer (i mean file, hehehe)
   console.log("Berhasil Download: ", data.name);
-  songname = "music/" + data.name + ".mp3";
+  songname = data.name + " by:" + data.artists.join(" ");
+  sourcename = "music/" + data.name + ".mp3";
 
+  console.log(sourcename);
   console.log(songname);
 
   let musicData = await fs.readFile("musiclist.json");
 
   musicData = JSON.parse(musicData);
-  musicData.music.push({ name: data.name, source: songname });
+  musicData.music.push({ name: songname, source: sourcename });
 
   await fs.writeFileSync(
     "musiclist.json",

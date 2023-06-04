@@ -22,5 +22,5 @@ Running workflows with input url track song spotify
 
 ## Thank to
 
-Spotifydl-core : https://github.com/AlenVelocity/spotifydl-core
-Github push : https://github.com/ad-m/github-push-action
+- Spotifydl-core : https://github.com/AlenVelocity/spotifydl-core
+- Github push : https://github.com/ad-m/github-push-action

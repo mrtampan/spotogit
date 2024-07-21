@@ -35,6 +35,6 @@ jobs:
         uses: ad-m/github-push-action@v0.6.0
         with:
           force: true
-          directory: "."
-          github_token: ${{ secrets.TOKEN }}
+          directory: '.'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ steps.extract_branch.outputs.branch }}

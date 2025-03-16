@@ -1,49 +1,52 @@
+const { exec } = require('child_process');
+const fs = require('fs-extra');
+
 async function runningApp() {
-  const env = require("dotenv").config();
-  const _ = require("lodash");
+  const url = process.argv[2];
 
-  // Initialization and Authentication
-  const Spotify = require("spotifydl-core").default; // Import the library
-  const spotify = new Spotify({
-    // Authentication
+  let musicMeta = '';
+  let title = '';
+  let musicData = await fs.readFile('musiclist.json');
 
-    clientId: env.parsed.CLIENT_ID_SPOTIFY, // <-- add your own clientId
-    clientSecret: env.parsed.CLIENT_SECRET_SPOTIFY, // <-- add your own clientSecret
-  });
+  execPromise('spotdl save ' + url + ' --save-file ./spotdl_data/data.spotdl')
+    .then(() => {
+      musicMeta = fs.readFileSync('./spotdl_data/data.spotdl');
+      musicMeta = JSON.parse(musicMeta);
+      for (let i = 0; i < musicMeta[0].artists.length; i++) {
+        title += musicMeta[0].artists[i];
+        title += i == musicMeta[0].artists.length - 1 ? '' : ', ';
+      }
+      title += ' - ' + musicMeta[0].name;
+    })
+    .catch((err) => console.log(err));
 
-  // Declaring the respective url in 'links' object
-  const links = {
-    song: process.argv[2], // Url of the album you want to gather info about
-  };
-  const fs = require("fs-extra");
+  execPromise('spotdl ' + url + ' --output ./music')
+    .then(() => {
+      musicData = JSON.parse(musicData);
+      musicData.music.push({
+        name: title,
+        source: './music/' + title + '.mp3',
+      });
 
-  // Engine
-
-  let songname = "";
-  let musicList = [];
-  const data = await spotify.getTrack(links.song); // Waiting for the data 🥱
-  console.log("Downloading: ", data.name, "by:", data.artists.join(" ")); // Keep an eye on the progress
-  const song = await spotify.downloadTrack(links.song); // Downloading goes brr brr
-  console.log("Downloading skuyyy: ", song); // Keep an eye on the progress
-  await fs.writeFile("music/" + data.name + ".mp3", song); // Let's write the buffer to the woofer (i mean file, hehehe)
-  console.log("Berhasil Download: ", data.name);
-  songname = data.name + " by:" + data.artists.join(" ");
-  sourcename = "music/" + data.name + ".mp3";
-
-  console.log(sourcename);
-  console.log(songname);
-
-  let musicData = await fs.readFile("musiclist.json");
-
-  musicData = JSON.parse(musicData);
-  musicData.music.push({ name: songname, source: sourcename });
-
-  await fs.writeFileSync(
-    "musiclist.json",
-    JSON.stringify(musicData),
-    function (error) {
-      console.log("Written file 'musiclist.json'... ");
-    }
-  );
+      fs.writeFileSync('musiclist.json', JSON.stringify(musicData));
+    })
+    .catch((err) => console.log(err));
 }
+
+function execPromise(command) {
+  return new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(`Error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        reject(`stderr: ${stderr}`);
+        return;
+      }
+      resolve(stdout); // Mengembalikan hasil dari stdout
+    });
+  });
+}
+
 runningApp();

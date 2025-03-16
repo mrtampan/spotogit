@@ -1,4 +1,3 @@
-
 # Spotogit
 
 Spotify to github page, transfer file music with actions
@@ -22,6 +21,7 @@ Running workflows with input url track song spotify
 
 ## Thank to
 
-- Spotifydl-core : https://github.com/AlenVelocity/spotifydl-core
+- Spotdl : https://github.com/spotDL/spotify-downloader
+- Spotifydl-core : https://github.com/AlenVelocity/spotifydl-core (Error)
 - Github push : https://github.com/ad-m/github-push-action
 - Setup FFMPEG Actions : https://github.com/FedericoCarboni/setup-ffmpeg

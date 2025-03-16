@@ -1,0 +1,31 @@
+name: Checkout GH page to Main
+
+on:
+  push:
+    branches:
+      - gh-pages
+
+jobs:
+  checkout-to-main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code from the gh-pages branch
+        uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Switch to the main branch
+        run: git checkout main
+
+      - name: Merge gh-pages into main
+        run: git merge gh-pages --no-ff -m "Merging gh-pages branch into main"
+
+      - name: Push changes to main branch
+        run: |
+          git push origin main

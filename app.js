@@ -22,6 +22,11 @@ async function runningApp() {
 
   execPromise('spotdl ' + url + ' --output ./music/' + title + '.mp3')
     .then(() => {
+      // waiting download
+      setTimeout(() => {
+        console.log('done');
+      }, 20000);
+
       if (!fs.existsSync('./music/' + title + '.mp3')) {
         process.exit(1); // Menutup program dengan status 1 (error)
       }
@@ -34,10 +39,6 @@ async function runningApp() {
       fs.writeFileSync('musiclist.json', JSON.stringify(musicData));
     })
     .catch((err) => console.log(err));
-
-  setTimeout(() => {
-    console.log('done');
-  }, 15000);
 }
 
 function execPromise(command) {

@@ -31,6 +31,11 @@ async function runningApp() {
       fs.writeFileSync('musiclist.json', JSON.stringify(musicData));
     })
     .catch((err) => console.log(err));
+
+  setTimeout(() => {
+    console.log('so sad');
+    console.log('Success');
+  }, 5000);
 }
 
 function execPromise(command) {

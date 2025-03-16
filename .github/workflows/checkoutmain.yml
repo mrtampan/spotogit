@@ -1,31 +1,37 @@
-name: Checkout GH page to Main
+name: Checkout Page to Main
 
 on:
-  push:
-    branches:
-      - gh-pages
+  workflow_dispatch:
 
 jobs:
   checkout-to-main:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code from the gh-pages branch
+      - name: Extract Branch
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - name: Checkout code from the page branch
         uses: actions/checkout@v3
-        with:
-          ref: gh-pages
-
       - name: Set up Git
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
+      - name: Show git status
+        run: git status
+
       - name: Switch to the main branch
         run: git checkout main
 
-      - name: Merge gh-pages into main
-        run: git merge gh-pages --no-ff -m "Merging gh-pages branch into main"
+      - name: Merge page into main
+        run: git merge ${{ steps.extract_branch.outputs.branch }} --no-ff -m "Merging page branch into main" || git merge ${{ steps.extract_branch.outputs.branch }} --strategy=recursive -X theirs
 
-      - name: Push changes to main branch
-        run: |
-          git push origin main
+      - name: Push
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          force: true
+          directory: '.'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.extract_branch.outputs.branch }}

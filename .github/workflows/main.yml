@@ -20,9 +20,10 @@ jobs:
       - uses: FedericoCarboni/setup-ffmpeg@v2
         id: setup-ffmpeg
       - name: Set up Python latest version
-        uses: actions/setup-python@v4 # Menggunakan setup-python action
+      - uses: actions/setup-python@v5
         with:
-          python-version: 'latest'
+          python-version: '3.13'
+          cache: 'pip'
       - name: Install Depedenciest npm
         run: |
           npm install

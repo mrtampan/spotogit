@@ -28,6 +28,14 @@ async function runningApp() {
   const spotdlfile = spawn('spotdl', [url, '--output', './music']);
   spotdlfile.on('close', (code) => {
     console.log(`Proses download file selesai dengan kode: ${code}`);
+    if (!fs.existsSync('./music/' + title + '.mp3')) {
+      setTimeout(() => {
+        console.log('tunggu');
+      }, 6000);
+    }
+    if (!fs.existsSync('./music/' + title + '.mp3')) {
+      process.exit(1); // Menutup program dengan status 1 (error)
+    }
     musicData = JSON.parse(musicData);
     musicData.music.push({
       name: title,

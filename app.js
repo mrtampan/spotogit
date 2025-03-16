@@ -20,7 +20,7 @@ async function runningApp() {
     })
     .catch((err) => console.log(err));
 
-  execPromise('spotdl ' + url + ' --output ./music')
+  execPromise('spotdl ' + url + ' --output ./music/' + title + '.mp3')
     .then(() => {
       musicData = JSON.parse(musicData);
       musicData.music.push({

@@ -29,9 +29,15 @@ jobs:
       - name: Install spotdl
         run: |
           pip install spotdl
+      - name: Download spotdl meta
+        run: |
+          spotdl save ${{ github.event.inputs.song }} --save-file ./spotdl_data/data.spotdl
+      - name: Download spotdl music
+        run: |
+          spotdl ${{ github.event.inputs.song }} --output ./music
       - name: Running app
         run: |
-          node app.js ${{ github.event.inputs.song }}
+          node app.js
       - name: Commit
         run: |
           git config --local user.name "mrtampan"

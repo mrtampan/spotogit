@@ -32,9 +32,18 @@ jobs:
       - name: Download spotdl meta
         run: |
           spotdl save ${{ github.event.inputs.song }} --save-file ./spotdl_data/data.spotdl
-      - name: Download spotdl music
+      - name: Download spotdl music with retry
         run: |
-          spotdl ${{ github.event.inputs.song }} --output ./music
+          set +e
+          for i in {1..3}; do
+            spotdl ${{ github.event.inputs.song }} --output ./music
+            if [ $? -eq 0 ]; then
+              break
+            fi
+            echo "Retrying download ($i/3)..."
+            sleep 10
+          done
+          set -e
       - name: Running app
         run: |
           node app.js

@@ -1,10 +1,10 @@
-name: Checkout Page to Main
+name: Merge Main into Pages
 
 on:
   workflow_dispatch:
 
 jobs:
-  checkout-to-main:
+  merge-main-into-pages:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,8 +12,12 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-      - name: Checkout code from the page branch
+
+      - name: Checkout the pages branch
         uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.extract_branch.outputs.branch }} # Checkout the pages branch
+
       - name: Set up Git
         run: |
           git config user.name "GitHub Actions"
@@ -22,16 +26,17 @@ jobs:
       - name: Show git status
         run: git status
 
-      - name: Switch to the main branch
-        run: git checkout main
+      - name: Fetch latest changes from the main branch
+        run: git fetch origin main
 
-      - name: Merge page into main
-        run: git merge ${{ steps.extract_branch.outputs.branch }} --no-ff -m "Merging page branch into main" || git merge ${{ steps.extract_branch.outputs.branch }} --strategy=recursive -X theirs
+      - name: Merge main into pages
+        run: |
+          git merge origin/main --no-ff -m "Merging main into pages" || git merge origin/main --strategy=recursive -X theirs
 
-      - name: Push
+      - name: Push changes to the pages branch
         uses: ad-m/github-push-action@v0.6.0
         with:
           force: true
           directory: '.'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ steps.extract_branch.outputs.branch }}
+          branch: ${{ steps.extract_branch.outputs.branch }} # Push changes to pages branch

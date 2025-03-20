@@ -28,7 +28,7 @@ jobs:
           npm install
       - name: Install spotdl
         run: |
-          pip install spotdl
+          pip install -U yt-dlp spotdl
       - name: Download spotdl meta
         run: |
           spotdl save ${{ github.event.inputs.song }} --save-file ./spotdl_data/data.spotdl

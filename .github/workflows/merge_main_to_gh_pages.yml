@@ -1,0 +1,36 @@
+name: Merge main to gh-pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Perlu untuk push ke branch
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Perlu agar bisa melakukan merge
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch all branches
+        run: git fetch origin
+
+      - name: Checkout gh-pages branch
+        run: git checkout gh-pages
+
+      - name: Merge main into gh-pages
+        run: |
+          git merge origin/main --no-edit || echo "No changes to merge"
+      
+      - name: Push changes to gh-pages
+        run: git push origin gh-pages
